@@ -107,7 +107,7 @@ function displayNotes(notes) {
     const message = document.createElement('div');
     message.classList.add('message', 'alert', 'alert-success', 'fade-in');  // Add fade-in effect
 
-    const formattedNotes = formatNotes(notes);  // Format the notes dynamically
+    const formattedNotes = marked(notes.trim());  // Format the notes dynamically
     message.innerHTML = `<strong>Generated Notes:</strong><br>${formattedNotes}`;
 
     generatedNotes.appendChild(message);
