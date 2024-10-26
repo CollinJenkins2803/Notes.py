@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio to Notes</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f8fa;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .drop-area {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .drop-area.drag-over {
+            background-color: #e1f5fe;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Upload Audio to Generate Notes</h2>
+        <div id="drop-area" class="drop-area">
+            <p>Drag & Drop Files or Click to Upload</p>
+            <input type="file" id="fileElem" accept="audio/*" hidden>
+        </div>
+        <div id="file-info" class="mb-3"></div>
+        <div id="generated-notes" class="mb-4"></div>
+        <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
