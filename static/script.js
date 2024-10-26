@@ -107,8 +107,8 @@ function displayNotes(notes) {
     const message = document.createElement('div');
     message.classList.add('message', 'alert', 'alert-success', 'fade-in');  // Add fade-in effect
 
-    const formattedNotes = marked(notes.trim());  // Format the notes dynamically
-    message.innerHTML = `<strong>Generated Notes:</strong><br>${formattedNotes}`;
+    const formatted = formatNotes(notes);  // Format the notes dynamically
+    message.innerHTML = `<strong>Generated Notes:</strong><br>${formatted}`;
 
     generatedNotes.appendChild(message);
     generatedNotes.scrollTop = generatedNotes.scrollHeight;  // Auto-scroll to the bottom
