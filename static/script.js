@@ -3,8 +3,10 @@ const fileElem = document.getElementById('fileElem');
 const chatWindow = document.getElementById('file-info');  // Displays uploaded files
 const generatedNotes = document.getElementById('generated-notes');  // Displays notes
 const spinner = document.getElementById('loading-spinner');
+const processUrlBtn = document.getElementById('processUrlBtn');
+const urlInput = document.getElementById('urlInput');
 
-const MAX_FILE_SIZE_MB = 200;
+const MAX_FILE_SIZE_MB = 300;
 let isProcessing = false;
 const uploadedFiles = new Set();
 
@@ -135,6 +137,32 @@ function formatNotes(notes) {
     return formatted;
 }
 
+processUrlBtn.addEventListener('click', async () => {
+    const url = urlInput.value.trim();
+    if (!url) {
+        alert('Please enter a valid URL.');
+        return;
+    }
+
+    try {
+        showSpinner();
+        const response = await fetch('/process-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+        });
+
+        if (!response.ok) throw new Error('Error processing the URL.');
+
+        const data = await response.json();
+        displayNotes(data.notes);
+    } catch (error) {
+        console.error('URL Processing Error:', error);
+        alert('Error processing the URL.');
+    } finally {
+        hideSpinner();
+    }
+});
 
 function showSpinner() {
     spinner.style.display = 'inline-block';

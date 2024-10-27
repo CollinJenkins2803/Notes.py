@@ -5,6 +5,11 @@ import openai
 import os
 import requests
 import shutil
+import yt_dlp as ydl
+import uuid  # For unique file names
+
+
+
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 UPLOAD_FOLDER = 'uploads/'
@@ -122,6 +127,63 @@ def send_to_4o_api(transcription):
     except requests.exceptions.RequestException as e:
         print(f"API request failed: {e}")
         return None
+
+def download_audio_from_url(url):
+    """Download audio from the provided URL using yt-dlp."""
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': os.path.join(UPLOAD_FOLDER, '%(id)s.%(ext)s'),  # Save with video ID and extension
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'm4a',
+            'preferredquality': '192',
+        }],
+        'keepvideo': False,  # Don't keep the original video file
+    }
+
+    with ydl.YoutubeDL(ydl_opts) as downloader:
+        result = downloader.extract_info(url, download=True)  # Extract download info
+
+    # Construct the audio path from the result data
+    audio_filename = f"{result['id']}.m4a"
+    audio_path = os.path.join(UPLOAD_FOLDER, audio_filename)
+
+    # Ensure the file exists before proceeding
+    if not os.path.exists(audio_path):
+        raise FileNotFoundError(f"File not found: {audio_path}")
+
+    return audio_path
+
+
+@app.route('/process-url', methods=['POST'])
+def process_url():
+    """Handle URL submission, download audio, and generate notes."""
+    data = request.json
+    url = data.get('url')
+
+    if not url:
+        return "URL is required", 400
+
+    try:
+        audio_path = download_audio_from_url(url)
+        audio_chunks = split_audio(audio_path)  # Use the existing split function
+
+        full_transcription = " ".join(
+            [transcribe_audio_with_whisper(chunk) for chunk in audio_chunks]
+        )
+
+        # Clean up the downloaded files
+        clear_upload_folder()
+
+        # Generate notes from transcription
+        notes = send_to_4o_api(full_transcription)
+        return jsonify({"notes": notes})
+
+    except Exception as e:
+        app.logger.error(f"Error processing URL: {e}")
+        return str(e), 500
+
+
 
 if __name__ == "__main__":
     if not os.path.exists(UPLOAD_FOLDER):

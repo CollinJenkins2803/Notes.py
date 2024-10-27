@@ -18,7 +18,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .drop-area {
-            border: 2px dashed #007bff;
+            border: 2px dashed rgb(234, 170, 0);
             padding: 20px;
             text-align: center;
             cursor: pointer;
@@ -35,6 +35,12 @@
         <div id="drop-area" class="drop-area">
             <p>Drag & Drop Files or Click to Upload</p>
             <input type="file" id="fileElem" accept="audio/*" hidden>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" id="urlInput" class="form-control" placeholder="Paste YouTube URL">
+            <div class="input-group-append">
+                <button class="btn btn-primary" id="processUrlBtn" type="button" style="background-color: rgb(0, 40, 85); color:rgb(234,170,0)" >Generate Notes from URL</button>
+            </div>
         </div>
         <div id="file-info" class="mb-3"></div>
         <div id="generated-notes" class="mb-4"></div>
